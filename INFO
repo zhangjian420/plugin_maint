@@ -1,7 +1,7 @@
 [info]
 name = maint
 version = 1.2
-longname = Maintenance Scheduler
+longname = 维护计划
 author = The Cacti Group
 email = 
 homepage = http://cacti.net

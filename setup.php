@@ -30,10 +30,15 @@ function plugin_maint_version() {
 }
 
 function plugin_maint_install() {
+    /* core plugin functionality */
+    api_plugin_register_hook('maint', 'top_header_tabs', 'maint_show_tab', 'setup.php');
+    api_plugin_register_hook('maint', 'top_graph_header_tabs', 'maint_show_tab', 'setup.php');
+    
 	api_plugin_register_hook('maint', 'config_arrays', 'maint_config_arrays', 'setup.php');
 	api_plugin_register_hook('maint', 'draw_navigation_text', 'maint_draw_navigation_text', 'setup.php');
 	api_plugin_register_hook('maint', 'is_device_in_maintenance', 'plugin_maint_check_cacti_host', 'functions.php');
-	api_plugin_register_realm('maint', 'maint.php', 'Maintenance Schedules', 1);
+	api_plugin_register_realm('maint', 'maint.php', '维护计划', 1);
+	api_plugin_register_realm('maint', 'userlog.php', '操作日志', 1);
 
 	maint_setup_database();
 }
@@ -49,6 +54,20 @@ function plugin_maint_upgrade() {
 	return false;
 }
 
+/**
+ * 显示顶部选项卡
+ */
+function maint_show_tab() {
+    global $config;
+    if (api_user_realm_auth('userlog.php')) {
+        if (substr_count($_SERVER['REQUEST_URI'], 'userlog.php')) {
+            print '<a href="' . $config['url_path'] . 'plugins/maint/userlog.php"><img src="' . $config['url_path'] . 'plugins/overview/images/tab_qunee_down.gif" alt="操作日志"></a>';
+        } else {
+            print '<a href="' . $config['url_path'] . 'plugins/maint/userlog.php"><img src="' . $config['url_path'] . 'plugins/overview/images/tab_qunee.gif" alt="操作日志"></a>';
+        }
+    }
+}
+
 function maint_config_arrays() {
 	global $menu;
 	$menu[__('Management')]['plugins/maint/maint.php'] = __('Maintenance Schedules', 'maint');
@@ -58,6 +77,8 @@ function maint_draw_navigation_text ($nav) {
 	$nav['maint.php:'] = array('title' => __('Maintenance Schedules', 'maint'), 'mapping' => 'index.php:', 'url' => 'maint.php', 'level' => '1');
 	$nav['maint.php:edit'] = array('title' => __('(edit)', 'maint'), 'mapping' => 'index.php:', 'url' => 'maint.php', 'level' => '2');
 	$nav['maint.php:actions'] = array('title' => __('(actions)', 'maint'), 'mapping' => 'index.php:', 'url' => 'maint.php', 'level' => '2');
+	
+	$nav['userlog.php:'] = array('title' => "操作日志", 'mapping' => '', 'url' => 'userlog.php', 'level' => '1');
 	return $nav;
 }
 
@@ -73,7 +94,7 @@ function maint_setup_database() {
 	$data['primary'] = 'id';
 	$data['keys'][] = array('name' => 'mtype', 'columns' => 'mtype');
 	$data['keys'][] = array('name' => 'enabled', 'columns' => 'enabled');
-	$data['type'] = 'MyISAM';
+	$data['type'] = 'InnoDB';
 	$data['comment'] = 'Maintenance Schedules';
 	api_plugin_db_table_create ('maint', 'plugin_maint_schedules', $data);
 
@@ -84,7 +105,7 @@ function maint_setup_database() {
 	$data['primary'] = 'type`,`schedule`,`host';
 	$data['keys'][] = array('name' => 'type', 'columns' => 'type');
 	$data['keys'][] = array('name' => 'schedule', 'columns' => 'schedule');
-	$data['type'] = 'MyISAM';
+	$data['type'] = 'InnoDB';
 	$data['comment'] = 'Maintenance Schedules Hosts';
 	api_plugin_db_table_create ('maint', 'plugin_maint_hosts', $data);
 }

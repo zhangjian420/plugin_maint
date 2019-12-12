@@ -32,14 +32,17 @@ function plugin_maint_check_webseer_url($host) {
 }
 
 function plugin_maint_check_host ($type, $host) {
-	$schedules = db_fetch_assoc("SELECT * FROM plugin_maint_hosts WHERE TYPE = $type AND (host = $host OR host = 0)");
-	if (!empty($schedules)) {
-		foreach ($schedules as $s) {
-			if (plugin_maint_check_schedule($s['schedule'])) {
-				return true;
-			}
-		}
-	}
+    //cacti_log("回调函数被调用 type = ".$type . ",host = ".$host);
+    if(!empty($host)){
+    	$schedules = db_fetch_assoc("SELECT * FROM plugin_maint_hosts WHERE TYPE = $type AND (host = $host OR host = 0)");
+    	if (!empty($schedules)) {
+    		foreach ($schedules as $s) {
+    			if (plugin_maint_check_schedule($s['schedule'])) {
+    				return true;
+    			}
+    		}
+    	}
+    }
 	return false;
 }
 

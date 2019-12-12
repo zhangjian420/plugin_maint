@@ -1,1 +1,4 @@
 locales/po/*.mo
+/.buildpath
+/.project
+/.gitignore

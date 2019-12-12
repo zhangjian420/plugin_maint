@@ -534,17 +534,17 @@ function schedule_edit() {
 				'max_length' => 20,
 				'size' => 20,
 				'description' => __('The start date / time for this schedule. Most date / time formats accepted.', 'maint'),
-				'default' => date('F j, Y, G:i', time()),
-				'value' => isset($maint_item_data['stime']) ?  date('F j, Y,  G:i', $maint_item_data['stime']) : ''
+				'default' => date('Y-m-d H:i', time()),
+				'value' => isset($maint_item_data['stime']) ?  date('Y-m-d H:i', $maint_item_data['stime']) : ''
 			),
 			'etime' => array(
 				'friendly_name' => __('End Time', 'maint'),
 				'method' => 'textbox',
 				'max_length' => 20,
 				'size' => 20,
-				'default' => date('F j, Y, G:i', time() + 3600),
+				'default' => date('Y-m-d H:i', time() + 3600),
 				'description' => __('The end date / time for this schedule. Most date / time formats accepted.', 'maint'),
-				'value' => isset($maint_item_data['etime']) ? date('F j, Y,  G:i', $maint_item_data['etime']) : ''
+				'value' => isset($maint_item_data['etime']) ? date('Y-m-d H:i', $maint_item_data['etime']) : ''
 			),
 			'save_component' => array(
 				'method' => 'hidden',
@@ -622,7 +622,7 @@ function schedule_edit() {
 				showAnim: 'slideDown',
 				numberOfMonths: 1,
 				timeFormat: 'HH:mm',
-				dateFormat: 'MM d, yy, ',
+				dateFormat: 'yy-mm-dd',
 				showButtonPanel: false
 			});
 
@@ -632,7 +632,7 @@ function schedule_edit() {
 				showAnim: 'slideDown',
 				numberOfMonths: 1,
 				timeFormat: 'HH:mm',
-				dateFormat: 'MM d, yy, ',
+				dateFormat: 'yy-mm-dd',
 				showButtonPanel: false
 			});
 		});
@@ -678,20 +678,20 @@ function schedules() {
 			switch($schedule['minterval']) {
 				case 86400:
 					if (date('j',$schedule['etime']) != date('j', $schedule['stime'])) {
-						form_selectable_cell(date('F j, Y, G:i', $schedule['stime']), $schedule['id']);
-						form_selectable_cell(date('F j, Y, G:i', $schedule['etime']), $schedule['id']);
+						form_selectable_cell(date('Y-m-d H:i', $schedule['stime']), $schedule['id']);
+						form_selectable_cell(date('Y-m-d H:i', $schedule['etime']), $schedule['id']);
 					} else {
-						form_selectable_cell(date('G:i', $schedule['stime']), $schedule['id']);
-						form_selectable_cell(date('G:i', $schedule['etime']), $schedule['id']);
+						form_selectable_cell(date('H:i', $schedule['stime']), $schedule['id']);
+						form_selectable_cell(date('H:i', $schedule['etime']), $schedule['id']);
 					}
 					break;
 				case 604800:
-					form_selectable_cell(date('l G:i', $schedule['stime']), $schedule['id']);
-					form_selectable_cell(date('l G:i', $schedule['etime']), $schedule['id']);
+					form_selectable_cell(date('m-d H:i', $schedule['stime']), $schedule['id']);
+					form_selectable_cell(date('m-d H:i', $schedule['etime']), $schedule['id']);
 					break;
 				default:
-					form_selectable_cell(date('F j, Y, G:i', $schedule['stime']), $schedule['id']);
-					form_selectable_cell(date('F j, Y, G:i', $schedule['etime']), $schedule['id']);
+					form_selectable_cell(date('Y-m-d H:i', $schedule['stime']), $schedule['id']);
+					form_selectable_cell(date('Y-m-d H:i', $schedule['etime']), $schedule['id']);
 			}
 
 
